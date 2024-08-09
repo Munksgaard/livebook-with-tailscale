@@ -4,6 +4,14 @@ FROM ghcr.io/livebook-dev/livebook:0.13.3
 
 WORKDIR /app
 
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install --no-install-recommends -y \
+        # Required for tailscale
+        iptables && \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
+    apt-get clean -y && \
+    rm -rf /var/lib/apt/lists/*
+
 # Copy binary to production image.
 COPY start.sh /app/bin/start.sh
 
